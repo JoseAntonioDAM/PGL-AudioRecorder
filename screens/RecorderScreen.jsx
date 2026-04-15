@@ -35,6 +35,8 @@ const RecorderScreens = () => {
     <View style={styles.audioHeader}>
       <Text style={styles.audioTitle}>Audios</Text>
       <FontAwesome name="trash-o" size={24} color="white" />
+      {/*Tengo que hacer una lista mockeadad/ momentanea lo hicimos con componentes y lo importamos*/}
+
     </View>
   </View>
 </View>
