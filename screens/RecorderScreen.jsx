@@ -28,8 +28,7 @@ async function handleRecordingPress() {
         }
       }
 
-      // 2. Si hay permiso, cambiamos el estado visual (por ahora)
-      // Aquí es donde luego meterás el código de Audio.Recording.createAsync()
+
       setIsRecording(!isRecording);
       
       console.log('Permiso ok, grabando:', !isRecording);
