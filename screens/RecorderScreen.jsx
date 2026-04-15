@@ -1,8 +1,7 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react'
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { TouchableOpacity } from 'react-native';
 import { useState } from 'react';
 import Animated, { 
   useSharedValue, 
@@ -11,7 +10,6 @@ import Animated, {
   withTiming 
 } from 'react-native-reanimated';
 import AudioItem from '../components/AudioItem';
-import { StyleSheet, Text, View, ScrollView } from 'react-native';
 
 const RecorderScreens = () => {
   const [isRecording, setIsRecording] = useState(false);
@@ -39,23 +37,29 @@ const RecorderScreens = () => {
     </TouchableOpacity>
   </View>
 
-  <View style={styles.audioSection}>
-    <View style={styles.audioHeader}>
-      <Text style={styles.audioTitle}>Audios</Text>
-      <FontAwesome name="trash-o" size={24} color="white" />
-      {/*Tengo que hacer una lista mockeadad/ momentanea lo hicimos con componentes y lo importamos*/}
-      {audios.map((audio) => (
-  <AudioItem
-    key={audio.id}
-    id={audio.id}
-    duration={audio.duration}
-    onDelete={(id) => setAudios(audios.filter(a => a.id !== id))}
-  />
-))}
-
-    </View>
+ <View style={styles.audioSection}>
+  
+  {/* Header: Audios + papelera separados */}
+  <View style={styles.audioHeader}>
+    <Text style={styles.audioTitle}>Audios</Text>
+    <FontAwesome name="trash-o" size={24} color="white" />
   </View>
-</View>
+
+  {/* Lista de audios FUERA del header */}
+  <ScrollView style={styles.audioList}>
+    {audios.map((audio) => (
+      <AudioItem
+        key={audio.id}
+        id={audio.id}
+        duration={audio.duration}
+        onDelete={(id) => setAudios(audios.filter(a => a.id !== id))}
+      />
+    ))}
+  </ScrollView>
+
+  </View>
+    </View>
+
       </>
   )
 }
@@ -75,6 +79,9 @@ container: {
     paddingHorizontal: 20,
     marginBottom: 40,
   },
+  audioList: {
+  marginTop: 15,
+},
   title: {
     color: 'white',
     fontSize: 22,
