@@ -13,12 +13,6 @@ import AudioItem from '../components/AudioItem';
 
 const RecorderScreens = () => {
   const [isRecording, setIsRecording] = useState(false);
-  // ponemos unos audios de ejemplo:
-  const [audios, setAudios] = useState([
-  { id: '1', duration: '0:23' },
-  { id: '2', duration: '1:05' },
-  { id: '3', duration: '0:47' },
-]);
 
   return (
     <>
@@ -29,37 +23,19 @@ const RecorderScreens = () => {
       <Ionicons name="moon-sharp" size={24} color="white" />
     </TouchableOpacity>
   </View>
-
   <View style={styles.recorderSection}>
     <TouchableOpacity style={styles.recordButton} onPress={() => setIsRecording(!isRecording)}>
       <FontAwesome name="microphone" size={32} color="white" />
       <Text style={styles.recordButtonText}>{isRecording ? "Parar" : "Grabar"}</Text>
     </TouchableOpacity>
   </View>
-
  <View style={styles.audioSection}>
-  
-  {/* Header: Audios + papelera separados */}
   <View style={styles.audioHeader}>
     <Text style={styles.audioTitle}>Audios</Text>
     <FontAwesome name="trash-o" size={24} color="white" />
   </View>
-
-  {/* Lista de audios FUERA del header */}
-  <ScrollView style={styles.audioList}>
-    {audios.map((audio) => (
-      <AudioItem
-        key={audio.id}
-        id={audio.id}
-        duration={audio.duration}
-        onDelete={(id) => setAudios(audios.filter(a => a.id !== id))}
-      />
-    ))}
-  </ScrollView>
-
   </View>
     </View>
-
       </>
   )
 }
