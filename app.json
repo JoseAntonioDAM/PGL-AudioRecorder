@@ -30,11 +30,12 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-audio",
-      "expo-av",
+      [
+        "expo-av",
         {
           "microphonePermission": "Esta app necesita acceder al micrófono para grabar tus audios."
         }
+      ]
     ]
   }
 }
