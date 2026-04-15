@@ -10,9 +10,17 @@ import Animated, {
   withRepeat, 
   withTiming 
 } from 'react-native-reanimated';
+import AudioItem from '../components/AudioItem';
+import { StyleSheet, Text, View, ScrollView } from 'react-native';
 
 const RecorderScreens = () => {
   const [isRecording, setIsRecording] = useState(false);
+  // ponemos unos audios de ejemplo:
+  const [audios, setAudios] = useState([
+  { id: '1', duration: '0:23' },
+  { id: '2', duration: '1:05' },
+  { id: '3', duration: '0:47' },
+]);
 
   return (
     <>
@@ -36,6 +44,14 @@ const RecorderScreens = () => {
       <Text style={styles.audioTitle}>Audios</Text>
       <FontAwesome name="trash-o" size={24} color="white" />
       {/*Tengo que hacer una lista mockeadad/ momentanea lo hicimos con componentes y lo importamos*/}
+      {audios.map((audio) => (
+  <AudioItem
+    key={audio.id}
+    id={audio.id}
+    duration={audio.duration}
+    onDelete={(id) => setAudios(audios.filter(a => a.id !== id))}
+  />
+))}
 
     </View>
   </View>
