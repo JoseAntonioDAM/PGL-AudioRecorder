@@ -4,6 +4,12 @@ import React from 'react'
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { TouchableOpacity } from 'react-native';
 import { useState } from 'react';
+import Animated, { 
+  useSharedValue, 
+  useAnimatedStyle, 
+  withRepeat, 
+  withTiming 
+} from 'react-native-reanimated';
 
 const RecorderScreens = () => {
   const [isRecording, setIsRecording] = useState(false);
@@ -32,7 +38,6 @@ const RecorderScreens = () => {
     </View>
   </View>
 </View>
-
       </>
   )
 }
