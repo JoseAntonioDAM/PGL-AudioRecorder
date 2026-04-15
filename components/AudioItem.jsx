@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
+
 const AudioItem = ({ id, duration, onDelete }) => {
   return (
     <View style={styles.container}>

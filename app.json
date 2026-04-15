@@ -13,8 +13,19 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "Esta app necesita acceder al micrófono para grabar tus audios."
+      }
     },
+    "plugins": [
+      [
+        "expo-av",
+        {
+          "microphonePermission": "Esta app necesita acceder al micrófono para grabar tus audios."
+        }
+      ]
+    ],
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",

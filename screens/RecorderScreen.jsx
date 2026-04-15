@@ -10,10 +10,33 @@ import Animated, {
   withTiming 
 } from 'react-native-reanimated';
 import AudioItem from '../components/AudioItem';
+import { Audio } from 'expo-av';
 
 const RecorderScreens = () => {
-  const [isRecording, setIsRecording] = useState(false);
+const [isRecording, setIsRecording] = useState(false);
+const [permissionResponse, requestPermission] = Audio.usePermissions();
 
+
+async function handleRecordingPress() {
+    try {
+      
+      if (permissionResponse?.status !== 'granted') {
+        const response = await requestPermission();
+        if (response.status !== 'granted') {
+          alert('¡Necesitamos el micro!');
+          return; 
+        }
+      }
+
+      // 2. Si hay permiso, cambiamos el estado visual (por ahora)
+      // Aquí es donde luego meterás el código de Audio.Recording.createAsync()
+      setIsRecording(!isRecording);
+      
+      console.log('Permiso ok, grabando:', !isRecording);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
   return (
     <>
    <View style={styles.container}>
