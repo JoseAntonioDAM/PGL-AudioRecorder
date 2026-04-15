@@ -47,7 +47,7 @@ async function handleRecordingPress() {
     </TouchableOpacity>
   </View>
   <View style={styles.recorderSection}>
-    <TouchableOpacity style={styles.recordButton} onPress={() => setIsRecording(!isRecording)}>
+   <TouchableOpacity style={styles.recordButton} onPress={handleRecordingPress}>
       <FontAwesome name="microphone" size={32} color="white" />
       <Text style={styles.recordButtonText}>{isRecording ? "Parar" : "Grabar"}</Text>
     </TouchableOpacity>
