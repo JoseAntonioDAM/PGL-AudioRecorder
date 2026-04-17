@@ -8,8 +8,11 @@ import AudioItem from '../components/AudioItem';
 import RecordingIndicator from '../components/RecordingIndicator';
 import LoadingSpinner from '../components/LoadingSpinner';
 import Animated, { useSharedValue, useAnimatedStyle, withRepeat, withTiming } from 'react-native-reanimated';
+import { darkTheme, lightTheme } from '../utils/theme';
 
 const RecorderScreens = () => {
+  const [isDark, setIsDark] = useState(true);
+  const theme = isDark ? darkTheme : lightTheme;
   const [isRecording, setIsRecording] = useState(false);
   const [audios, setAudios] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -33,6 +36,8 @@ const RecorderScreens = () => {
   const animatedTitleStyle = useAnimatedStyle(() => ({
     color: `rgb(${Math.round(255 - colorValue.value * 63)}, ${Math.round(255 - colorValue.value * 255)}, ${Math.round(255 - colorValue.value * 255)})`,
   }));
+
+  const styles = getStyles(theme);
 
   async function handleRecordingPress() {
     try {
@@ -70,8 +75,8 @@ const RecorderScreens = () => {
           <Animated.Text style={[styles.title, animatedTitleStyle]}>
             JoseRecorder
           </Animated.Text>
-          <TouchableOpacity>
-            <Ionicons name="moon-sharp" size={24} color="white" />
+          <TouchableOpacity onPress={() => setIsDark(!isDark)}>
+            <Ionicons name={isDark ? "sunny" : "moon-sharp"} size={24} color={theme.icon} />
           </TouchableOpacity>
         </View>
         <View style={styles.recorderSection}>
@@ -84,7 +89,7 @@ const RecorderScreens = () => {
         <View style={styles.audioSection}>
           <View style={styles.audioHeader}>
             <Text style={styles.audioTitle}>Audios</Text>
-            <FontAwesome name="trash-o" size={24} color="white" />
+            <FontAwesome name="trash-o" size={24} color={theme.icon} />
           </View>
           {isLoading || isRecording ? (
             <LoadingSpinner />
@@ -95,6 +100,7 @@ const RecorderScreens = () => {
                   key={audio.id}
                   id={audio.id}
                   uri={audio.uri}
+                  theme={theme}
                   onDelete={(id) => {
                     const updated = audios.filter(a => a.id !== id);
                     setAudios(updated);
@@ -112,10 +118,10 @@ const RecorderScreens = () => {
 
 export default RecorderScreens
 
-const styles = StyleSheet.create({
+const getStyles = (theme) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1a1a1a',
+    backgroundColor: theme.background,
     paddingTop: 50,
   },
   header: {
@@ -151,7 +157,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   audioSection: {
-    backgroundColor: '#2a2a2a',
+    backgroundColor: theme.audioSection,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     padding: 20,
@@ -163,7 +169,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   audioTitle: {
-    color: 'white',
+    color: theme.text,
     fontSize: 18,
     fontWeight: 'bold',
   },
