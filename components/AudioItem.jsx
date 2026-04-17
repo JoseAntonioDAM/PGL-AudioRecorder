@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useAudioPlayer, useAudioPlayerStatus, setAudioModeAsync } from 'expo-audio';
 import { useEffect } from 'react';
 
-const AudioItem = ({ id, uri, duration, onDelete }) => {
+const AudioItem = ({ id, uri, onDelete }) => {
   const player = useAudioPlayer(uri);
   const status = useAudioPlayerStatus(player);
 
