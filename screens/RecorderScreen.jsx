@@ -5,6 +5,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useAudioRecorder, RecordingPresets, AudioModule, setAudioModeAsync } from 'expo-audio';
 import StorageService from '../services/StorageService';
 import AudioItem from '../components/AudioItem';
+import RecordingIndicator from '../components/RecordingIndicator';
 
 const RecorderScreens = () => {
   const [isRecording, setIsRecording] = useState(false);
@@ -62,6 +63,7 @@ const RecorderScreens = () => {
             <FontAwesome name="microphone" size={32} color="white" />
             <Text style={styles.recordButtonText}>{isRecording ? "Parar" : "Grabar"}</Text>
           </TouchableOpacity>
+          {isRecording && <RecordingIndicator />}
         </View>
         <View style={styles.audioSection}>
           <View style={styles.audioHeader}>
