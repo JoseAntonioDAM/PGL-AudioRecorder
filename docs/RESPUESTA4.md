@@ -59,4 +59,5 @@ una vez, al arrancar la app.
 
 ## Demostración gráfica: 
 
+Es necesario que usted descargue el vídeo a continuación:
 ![Video-Demostracion](../assets/video.mov)
