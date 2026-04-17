@@ -58,7 +58,12 @@ javascriptconst [permissionResponse, requestPermission] = Audio.usePermissions()
 Cuando el usuario pulsa el botón de grabar, comprueba si ya tiene el permiso concedido. Si no lo tiene, lo solicitas. Si lo deniega, muestras un aviso:
 
 Eso se logra apreciar justo en el trozo de código que se aprecia en la siguiente imagen:
+![codigo de logica de permiso](../assets/codigo.png)
+Explicación del código: 
 
+En primer lugar, se declara una función 'async' - 'asincrona':
+ Una función asíncrona es una función que puede hacer tareas que tardan tiempo, como esperar la respuesta del móvil, sin bloquear el resto de la app. Cuando le pides permiso al sistema, tu app tiene que esperar a que el usuario pulse "Permitir" o "Denegar". Si fuera una función normal, la app se quedaría congelada esperando. Con async y await, la app sigue funcionando con normalidad mientras espera.
+La función handleRecordingPress es una función asíncrona que se ejecuta cuando el usuario pulsa el botón de grabar. Primero comprueba si el permiso del micrófono ya está concedido, y si no lo está, lanza el popup del móvil con await requestPermission() esperando la respuesta del usuario sin bloquear la app. Si el usuario deniega el permiso, muestra un alert y sale de la función con return. Si lo acepta, cambia el estado isRecording para indicar que se está grabando. Todo esto está dentro de un try/catch para que si ocurre cualquier error inesperado, se muestre por consola sin que la app se rompa.
 
 
 
