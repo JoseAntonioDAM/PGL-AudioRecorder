@@ -3,6 +3,7 @@ import { Ionicons } from '@expo/vector-icons';
 import React from 'react'
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useState } from 'react';
+import { Audio } from 'expo-av';  
 
 
 const RecorderScreens = () => {
@@ -16,14 +17,11 @@ async function handleRecordingPress() {
       if (permissionResponse?.status !== 'granted') {
         const response = await requestPermission();
         if (response.status !== 'granted') {
-          alert('¡Necesitamos el micro!');
+          alert('¡Necesitamos el micro! - Metete en los ajustes de tu movil de Expo, y activa el micro ');
           return; 
         }
       }
-
-
       setIsRecording(!isRecording);
-      
       console.log('Permiso ok, grabando:', !isRecording);
     } catch (error) {
       console.error('Error:', error);
