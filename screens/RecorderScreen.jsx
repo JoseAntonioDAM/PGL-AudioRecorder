@@ -1,62 +1,97 @@
 import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import React from 'react'
+import React, { useState, useEffect } from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { useState } from 'react';
-import { Audio } from 'expo-av';  
-
+import { useAudioRecorder, RecordingPresets, AudioModule, setAudioModeAsync } from 'expo-audio';
+import StorageService from '../services/StorageService';
+import AudioItem from '../components/AudioItem';
 
 const RecorderScreens = () => {
-const [isRecording, setIsRecording] = useState(false);
-const [permissionResponse, requestPermission] = Audio.usePermissions();
+  const [isRecording, setIsRecording] = useState(false);
+  const [audios, setAudios] = useState([]);
+  const audioRecorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
 
+  useEffect(() => {
+    const loadAudios = async () => {
+      const saved = await StorageService.getAudios();
+      if (saved) setAudios(saved);
+    };
+    loadAudios();
+  }, []);
 
-async function handleRecordingPress() {
+  async function handleRecordingPress() {
     try {
-      
-      if (permissionResponse?.status !== 'granted') {
-        const response = await requestPermission();
-        if (response.status !== 'granted') {
-          alert('¡Necesitamos el micro! - Metete en los ajustes de tu movil de Expo, y activa el micro ');
-          return; 
+      if (!isRecording) {
+        const permission = await AudioModule.requestRecordingPermissionsAsync();
+        if (!permission.granted) {
+          alert('Necesitamos el micro, ve a ajustes > Expo Go > activa el micrófono!');
+          return;
         }
+        await setAudioModeAsync({
+          allowsRecording: true,
+          playsInSilentMode: true,
+        });
+        await audioRecorder.prepareToRecordAsync();
+        audioRecorder.record();
+        setIsRecording(true);
+      } else {
+        await audioRecorder.stop();
+        const uri = audioRecorder.uri;
+        const newAudio = { id: Date.now().toString(), uri, duration: '0:00' };
+        const updatedAudios = [...audios, newAudio];
+        setAudios(updatedAudios);
+        await StorageService.saveAudios(updatedAudios);
+        setIsRecording(false);
       }
-      setIsRecording(!isRecording);
-      console.log('Permiso ok, grabando:', !isRecording);
     } catch (error) {
       console.error('Error:', error);
     }
   }
+
   return (
     <>
-   <View style={styles.container}>
-  <View style={styles.header}>
-    <Text style={styles.title}>JoseRecorder</Text>
-    <TouchableOpacity>
-      <Ionicons name="moon-sharp" size={24} color="white" />
-    </TouchableOpacity>
-  </View>
-  <View style={styles.recorderSection}>
-   <TouchableOpacity style={styles.recordButton} onPress={handleRecordingPress}>
-      <FontAwesome name="microphone" size={32} color="white" />
-      <Text style={styles.recordButtonText}>{isRecording ? "Parar" : "Grabar"}</Text>
-    </TouchableOpacity>
-  </View>
- <View style={styles.audioSection}>
-  <View style={styles.audioHeader}>
-    <Text style={styles.audioTitle}>Audios</Text>
-    <FontAwesome name="trash-o" size={24} color="white" />
-  </View>
-  </View>
-    </View>
-      </>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.title}>JoseRecorder</Text>
+          <TouchableOpacity>
+            <Ionicons name="moon-sharp" size={24} color="white" />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.recorderSection}>
+          <TouchableOpacity style={styles.recordButton} onPress={handleRecordingPress}>
+            <FontAwesome name="microphone" size={32} color="white" />
+            <Text style={styles.recordButtonText}>{isRecording ? "Parar" : "Grabar"}</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.audioSection}>
+          <View style={styles.audioHeader}>
+            <Text style={styles.audioTitle}>Audios</Text>
+            <FontAwesome name="trash-o" size={24} color="white" />
+          </View>
+          <ScrollView style={styles.audioList}>
+            {audios.map((audio) => (
+              <AudioItem
+                key={audio.id}
+                id={audio.id}
+                duration={audio.duration}
+                onDelete={(id) => {
+                  const updated = audios.filter(a => a.id !== id);
+                  setAudios(updated);
+                  StorageService.saveAudios(updated);
+                }}
+              />
+            ))}
+          </ScrollView>
+        </View>
+      </View>
+    </>
   )
 }
 
 export default RecorderScreens
 
 const styles = StyleSheet.create({
-container: {
+  container: {
     flex: 1,
     backgroundColor: '#1a1a1a',
     paddingTop: 50,
@@ -69,8 +104,8 @@ container: {
     marginBottom: 40,
   },
   audioList: {
-  marginTop: 15,
-},
+    marginTop: 15,
+  },
   title: {
     color: 'white',
     fontSize: 22,
@@ -111,5 +146,4 @@ container: {
     fontSize: 18,
     fontWeight: 'bold',
   },
-  
 })

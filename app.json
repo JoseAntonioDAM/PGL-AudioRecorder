@@ -35,7 +35,8 @@
         {
           "microphonePermission": "Esta app necesita acceder al micrófono para grabar tus audios."
         }
-      ]
+      ],
+      "expo-audio"
     ]
   }
 }
