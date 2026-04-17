@@ -61,9 +61,17 @@ Eso se logra apreciar justo en el trozo de código que se aprecia en la siguient
 ![codigo de logica de permiso](../assets/codigo.png)
 Explicación del código: 
 
-En primer lugar, se declara una función 'async' - 'asincrona':
+Se declara una función 'async' - 'asíncrona':
  Una función asíncrona es una función que puede hacer tareas que tardan tiempo, como esperar la respuesta del móvil, sin bloquear el resto de la app. Cuando le pides permiso al sistema, tu app tiene que esperar a que el usuario pulse "Permitir" o "Denegar". Si fuera una función normal, la app se quedaría congelada esperando. Con async y await, la app sigue funcionando con normalidad mientras espera.
-La función handleRecordingPress es una función asíncrona que se ejecuta cuando el usuario pulsa el botón de grabar. Primero comprueba si el permiso del micrófono ya está concedido, y si no lo está, lanza el popup del móvil con await requestPermission() esperando la respuesta del usuario sin bloquear la app. Si el usuario deniega el permiso, muestra un alert y sale de la función con return. Si lo acepta, cambia el estado isRecording para indicar que se está grabando. Todo esto está dentro de un try/catch para que si ocurre cualquier error inesperado, se muestre por consola sin que la app se rompa.
+
+ - La función handleRecordingPress es una función asíncrona que se ejecuta cuando el usuario pulsa el botón de grabar. Primero comprueba si el permiso del micrófono ya está concedido, y si no lo está, lanza el popup del móvil con await requestPermission() esperando la respuesta del usuario sin bloquear la app. Si el usuario deniega el permiso, muestra un alert y sale de la función con return. Si lo acepta, cambia el estado isRecording para indicar que se está grabando. Todo esto está dentro de un try/catch para que si ocurre cualquier error inesperado, se muestre por consola sin que la app se rompa.
+
+Por último, enlazas la función al botón con onPress, de forma que cada vez que el usuario lo pulse se ejecute toda la lógica anterior.
+
+**Nota importante: El popup nativo solo aparece una vez. Si el usuario lo deniega, las siguientes veces ya no aparece y tendrá que ir manualmente a Ajustes del móvil para activarlo. Por eso es buena práctica explicarle al usuario para qué se usa el micrófono antes de pedirlo.
 
 
+Entonces, el flujo quedaría así: 
+
+Cuando el usuario pulsa el botón, lo primero que hace la función es comprobar si ya tiene el permiso del micrófono concedido. Si ya lo tiene -> directamente cambia el estado de grabación. Si no lo tiene ->  lanza el popup del móvil esperando la respuesta del usuario. Si el usuario acepta, cambia el estado de grabación. Si lo deniega, muestra un alert y para la ejecución sin hacer nada más.
 
