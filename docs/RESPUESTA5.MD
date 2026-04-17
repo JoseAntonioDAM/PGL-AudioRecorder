@@ -10,13 +10,12 @@ iniciales y durante el proceso de grabación.
 ### El componente LoadingSpinner
 Es un círculo que gira continuamente usando **React Native Reanimated**:
 
-Una biblioteca avanzada de código abierto, desarrollada por Software Mansion, que permite crear animaciones e interacciones complejas y fluidas en aplicaciones de React Native
+Una biblioteca avanzada de código abierto, que permite crear animaciones e interacciones complejas y fluidas en aplicaciones de React Native
 
 ### Lugar 1 - Al cargar las grabaciones iniciales
 Se usa un estado `isLoading` que se activa antes de recuperar los audios 
 del AsyncStorage y se desactiva cuando termina:
 
-```tsx
 useEffect(() => {
   const loadAudios = async () => {
     setIsLoading(true);
@@ -26,13 +25,12 @@ useEffect(() => {
   };
   loadAudios();
 }, []);
-```
+
 
 ### Lugar 2 - Durante el proceso de grabación
 El spinner también aparece mientras el usuario está grabando, 
 ocultando la lista de audios:
 
-```tsx
 {isLoading || isRecording ? (
   <LoadingSpinner />
 ) : (
@@ -42,7 +40,8 @@ ocultando la lista de audios:
     ))}
   </ScrollView>
 )}
-```
 
-## Demo
-[Añade aquí el GIF mostrando el spinner al abrir la app y al grabar]
+
+## Demostración visual
+Lastimosamente, solo se puede visualizar la 2da forma, puesto que la 1era es muy rápida. Pero, cumple su función
+![Demostración visual](../assets/carga.png)
