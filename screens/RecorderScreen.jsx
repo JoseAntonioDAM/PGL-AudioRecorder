@@ -6,16 +6,20 @@ import { useAudioRecorder, RecordingPresets, AudioModule, setAudioModeAsync } fr
 import StorageService from '../services/StorageService';
 import AudioItem from '../components/AudioItem';
 import RecordingIndicator from '../components/RecordingIndicator';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const RecorderScreens = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [audios, setAudios] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const audioRecorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
 
   useEffect(() => {
     const loadAudios = async () => {
+      setIsLoading(true);
       const saved = await StorageService.getAudios();
       if (saved) setAudios(saved);
+      setIsLoading(false);
     };
     loadAudios();
   }, []);
@@ -38,7 +42,7 @@ const RecorderScreens = () => {
       } else {
         await audioRecorder.stop();
         const uri = audioRecorder.uri;
-        const newAudio = { id: Date.now().toString(), uri, duration: '0:00' };
+        const newAudio = { id: Date.now().toString(), uri };
         const updatedAudios = [newAudio, ...audios];
         setAudios(updatedAudios);
         await StorageService.saveAudios(updatedAudios);
@@ -70,21 +74,24 @@ const RecorderScreens = () => {
             <Text style={styles.audioTitle}>Audios</Text>
             <FontAwesome name="trash-o" size={24} color="white" />
           </View>
-          <ScrollView style={styles.audioList}>
-            {audios.map((audio) => (
-              <AudioItem
-  key={audio.id}
-  id={audio.id}
-  uri={audio.uri}
-  duration={audio.duration}
-  onDelete={(id) => {
-    const updated = audios.filter(a => a.id !== id);
-    setAudios(updated);
-    StorageService.saveAudios(updated);
-  }}
-/>
-            ))}
-          </ScrollView>
+          {isLoading || isRecording ? (
+            <LoadingSpinner />
+          ) : (
+            <ScrollView style={styles.audioList}>
+              {audios.map((audio) => (
+                <AudioItem
+                  key={audio.id}
+                  id={audio.id}
+                  uri={audio.uri}
+                  onDelete={(id) => {
+                    const updated = audios.filter(a => a.id !== id);
+                    setAudios(updated);
+                    StorageService.saveAudios(updated);
+                  }}
+                />
+              ))}
+            </ScrollView>
+          )}
         </View>
       </View>
     </>
