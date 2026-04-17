@@ -1,19 +1,32 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react'
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { TouchableOpacity } from 'react-native';
 import { useState } from 'react';
-import Animated, { 
-  useSharedValue, 
-  useAnimatedStyle, 
-  withRepeat, 
-  withTiming 
-} from 'react-native-reanimated';
+import { Audio } from 'expo-av';  
+
 
 const RecorderScreens = () => {
-  const [isRecording, setIsRecording] = useState(false);
+const [isRecording, setIsRecording] = useState(false);
+const [permissionResponse, requestPermission] = Audio.usePermissions();
 
+
+async function handleRecordingPress() {
+    try {
+      
+      if (permissionResponse?.status !== 'granted') {
+        const response = await requestPermission();
+        if (response.status !== 'granted') {
+          alert('¡Necesitamos el micro! - Metete en los ajustes de tu movil de Expo, y activa el micro ');
+          return; 
+        }
+      }
+      setIsRecording(!isRecording);
+      console.log('Permiso ok, grabando:', !isRecording);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
   return (
     <>
    <View style={styles.container}>
@@ -23,23 +36,19 @@ const RecorderScreens = () => {
       <Ionicons name="moon-sharp" size={24} color="white" />
     </TouchableOpacity>
   </View>
-
   <View style={styles.recorderSection}>
-    <TouchableOpacity style={styles.recordButton} onPress={() => setIsRecording(!isRecording)}>
+   <TouchableOpacity style={styles.recordButton} onPress={handleRecordingPress}>
       <FontAwesome name="microphone" size={32} color="white" />
       <Text style={styles.recordButtonText}>{isRecording ? "Parar" : "Grabar"}</Text>
     </TouchableOpacity>
   </View>
-
-  <View style={styles.audioSection}>
-    <View style={styles.audioHeader}>
-      <Text style={styles.audioTitle}>Audios</Text>
-      <FontAwesome name="trash-o" size={24} color="white" />
-      {/*Tengo que hacer una lista mockeadad/ momentanea lo hicimos con componentes y lo importamos*/}
-
-    </View>
+ <View style={styles.audioSection}>
+  <View style={styles.audioHeader}>
+    <Text style={styles.audioTitle}>Audios</Text>
+    <FontAwesome name="trash-o" size={24} color="white" />
   </View>
-</View>
+  </View>
+    </View>
       </>
   )
 }
@@ -59,6 +68,9 @@ container: {
     paddingHorizontal: 20,
     marginBottom: 40,
   },
+  audioList: {
+  marginTop: 15,
+},
   title: {
     color: 'white',
     fontSize: 22,
