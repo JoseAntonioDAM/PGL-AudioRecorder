@@ -16,4 +16,8 @@ Usted está leyendo el documento readme de la aplicación de audio-recorder de J
 
 ## Respuesta 5 : COMPONENTE PROPIO
 
+[Componente Propio](./docs/RESPUESTA5.MD)
+
 ## Respuesta 6 : ANIMACIÓN PROPIA
+
+[Animación propia](./docs/RESPUESTA6.md)
