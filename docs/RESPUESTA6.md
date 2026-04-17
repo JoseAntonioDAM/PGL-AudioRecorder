@@ -48,3 +48,7 @@ Se sustituye `Text` por `Animated.Text` para poder aplicar el estilo animado:
 </Animated.Text>
 
 
+## Recurso visual
+![Imagen del titulo cambiante 1 (blanca)](../assets/blanco.png)
+![Roja](../assets/rojo.png)
+![Roji-blanca](../assets/rojito.png)
