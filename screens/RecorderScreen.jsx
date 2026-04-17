@@ -39,6 +39,11 @@ const RecorderScreens = () => {
 
   const styles = getStyles(theme);
 
+  const deleteAllAudios = async () => {
+    setAudios([]);
+    await StorageService.saveAudios([]);
+  };
+
   async function handleRecordingPress() {
     try {
       if (!isRecording) {
@@ -89,7 +94,9 @@ const RecorderScreens = () => {
         <View style={styles.audioSection}>
           <View style={styles.audioHeader}>
             <Text style={styles.audioTitle}>Audios</Text>
-            <FontAwesome name="trash-o" size={24} color={theme.icon} />
+            <TouchableOpacity onPress={deleteAllAudios}>
+              <FontAwesome name="trash-o" size={24} color={theme.icon} />
+            </TouchableOpacity>
           </View>
           {isLoading || isRecording ? (
             <LoadingSpinner />
