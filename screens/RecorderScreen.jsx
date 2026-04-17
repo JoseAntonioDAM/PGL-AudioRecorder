@@ -3,14 +3,7 @@ import { Ionicons } from '@expo/vector-icons';
 import React from 'react'
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useState } from 'react';
-import Animated, { 
-  useSharedValue, 
-  useAnimatedStyle, 
-  withRepeat, 
-  withTiming 
-} from 'react-native-reanimated';
-import AudioItem from '../components/AudioItem';
-import { Audio } from 'expo-av';
+
 
 const RecorderScreens = () => {
 const [isRecording, setIsRecording] = useState(false);
