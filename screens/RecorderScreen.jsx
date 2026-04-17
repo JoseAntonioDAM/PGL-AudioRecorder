@@ -7,12 +7,18 @@ import StorageService from '../services/StorageService';
 import AudioItem from '../components/AudioItem';
 import RecordingIndicator from '../components/RecordingIndicator';
 import LoadingSpinner from '../components/LoadingSpinner';
+import Animated, { useSharedValue, useAnimatedStyle, withRepeat, withTiming } from 'react-native-reanimated';
 
 const RecorderScreens = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [audios, setAudios] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const audioRecorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
+  const colorValue = useSharedValue(0);
+
+  useEffect(() => {
+    colorValue.value = withRepeat(withTiming(1, { duration: 1500 }), -1, true);
+  }, []);
 
   useEffect(() => {
     const loadAudios = async () => {
@@ -23,6 +29,10 @@ const RecorderScreens = () => {
     };
     loadAudios();
   }, []);
+
+  const animatedTitleStyle = useAnimatedStyle(() => ({
+    color: `rgb(${Math.round(255 - colorValue.value * 63)}, ${Math.round(255 - colorValue.value * 255)}, ${Math.round(255 - colorValue.value * 255)})`,
+  }));
 
   async function handleRecordingPress() {
     try {
@@ -57,7 +67,9 @@ const RecorderScreens = () => {
     <>
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.title}>JoseRecorder</Text>
+          <Animated.Text style={[styles.title, animatedTitleStyle]}>
+            JoseRecorder
+          </Animated.Text>
           <TouchableOpacity>
             <Ionicons name="moon-sharp" size={24} color="white" />
           </TouchableOpacity>
@@ -117,7 +129,6 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   title: {
-    color: 'white',
     fontSize: 22,
     fontWeight: 'bold',
   },
