@@ -38,7 +38,7 @@ const RecorderScreens = () => {
         await audioRecorder.stop();
         const uri = audioRecorder.uri;
         const newAudio = { id: Date.now().toString(), uri, duration: '0:00' };
-        const updatedAudios = [...audios, newAudio];
+        const updatedAudios = [newAudio, ...audios];
         setAudios(updatedAudios);
         await StorageService.saveAudios(updatedAudios);
         setIsRecording(false);
@@ -71,15 +71,16 @@ const RecorderScreens = () => {
           <ScrollView style={styles.audioList}>
             {audios.map((audio) => (
               <AudioItem
-                key={audio.id}
-                id={audio.id}
-                duration={audio.duration}
-                onDelete={(id) => {
-                  const updated = audios.filter(a => a.id !== id);
-                  setAudios(updated);
-                  StorageService.saveAudios(updated);
-                }}
-              />
+  key={audio.id}
+  id={audio.id}
+  uri={audio.uri}
+  duration={audio.duration}
+  onDelete={(id) => {
+    const updated = audios.filter(a => a.id !== id);
+    setAudios(updated);
+    StorageService.saveAudios(updated);
+  }}
+/>
             ))}
           </ScrollView>
         </View>
