@@ -5,19 +5,34 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useAudioRecorder, RecordingPresets, AudioModule, setAudioModeAsync } from 'expo-audio';
 import StorageService from '../services/StorageService';
 import AudioItem from '../components/AudioItem';
+import RecordingIndicator from '../components/RecordingIndicator';
+import LoadingSpinner from '../components/LoadingSpinner';
+import Animated, { useSharedValue, useAnimatedStyle, withRepeat, withTiming } from 'react-native-reanimated';
 
 const RecorderScreens = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [audios, setAudios] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const audioRecorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
+  const colorValue = useSharedValue(0);
+
+  useEffect(() => {
+    colorValue.value = withRepeat(withTiming(1, { duration: 1500 }), -1, true);
+  }, []);
 
   useEffect(() => {
     const loadAudios = async () => {
+      setIsLoading(true);
       const saved = await StorageService.getAudios();
       if (saved) setAudios(saved);
+      setIsLoading(false);
     };
     loadAudios();
   }, []);
+
+  const animatedTitleStyle = useAnimatedStyle(() => ({
+    color: `rgb(${Math.round(255 - colorValue.value * 63)}, ${Math.round(255 - colorValue.value * 255)}, ${Math.round(255 - colorValue.value * 255)})`,
+  }));
 
   async function handleRecordingPress() {
     try {
@@ -37,8 +52,8 @@ const RecorderScreens = () => {
       } else {
         await audioRecorder.stop();
         const uri = audioRecorder.uri;
-        const newAudio = { id: Date.now().toString(), uri, duration: '0:00' };
-        const updatedAudios = [...audios, newAudio];
+        const newAudio = { id: Date.now().toString(), uri };
+        const updatedAudios = [newAudio, ...audios];
         setAudios(updatedAudios);
         await StorageService.saveAudios(updatedAudios);
         setIsRecording(false);
@@ -52,7 +67,9 @@ const RecorderScreens = () => {
     <>
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.title}>JoseRecorder</Text>
+          <Animated.Text style={[styles.title, animatedTitleStyle]}>
+            JoseRecorder
+          </Animated.Text>
           <TouchableOpacity>
             <Ionicons name="moon-sharp" size={24} color="white" />
           </TouchableOpacity>
@@ -62,26 +79,31 @@ const RecorderScreens = () => {
             <FontAwesome name="microphone" size={32} color="white" />
             <Text style={styles.recordButtonText}>{isRecording ? "Parar" : "Grabar"}</Text>
           </TouchableOpacity>
+          {isRecording && <RecordingIndicator />}
         </View>
         <View style={styles.audioSection}>
           <View style={styles.audioHeader}>
             <Text style={styles.audioTitle}>Audios</Text>
             <FontAwesome name="trash-o" size={24} color="white" />
           </View>
-          <ScrollView style={styles.audioList}>
-            {audios.map((audio) => (
-              <AudioItem
-                key={audio.id}
-                id={audio.id}
-                duration={audio.duration}
-                onDelete={(id) => {
-                  const updated = audios.filter(a => a.id !== id);
-                  setAudios(updated);
-                  StorageService.saveAudios(updated);
-                }}
-              />
-            ))}
-          </ScrollView>
+          {isLoading || isRecording ? (
+            <LoadingSpinner />
+          ) : (
+            <ScrollView style={styles.audioList}>
+              {audios.map((audio) => (
+                <AudioItem
+                  key={audio.id}
+                  id={audio.id}
+                  uri={audio.uri}
+                  onDelete={(id) => {
+                    const updated = audios.filter(a => a.id !== id);
+                    setAudios(updated);
+                    StorageService.saveAudios(updated);
+                  }}
+                />
+              ))}
+            </ScrollView>
+          )}
         </View>
       </View>
     </>
@@ -107,7 +129,6 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   title: {
-    color: 'white',
     fontSize: 22,
     fontWeight: 'bold',
   },
